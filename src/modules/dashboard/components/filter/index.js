@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import { Form, Button, Select } from 'antd/lib/index'
 import Header from '../../../../components/header'
 
@@ -17,49 +17,45 @@ const selectProps = {
  * @returns {*}
  * @constructor
  */
-const Filter = ({onSubmit, dataSources = [], campaigns = []}) => (
-  <>
-    <Header title="Filter dimention values"/>
-    <Form
-      name="basic"
-      onFinish={onSubmit}
-      initialValues={{dataSources: [], campaigns: []}}
-    >
-      <Form.Item
-        label="DataSource"
-        name="dataSources"
-      >
-        <Select {...selectProps} >
-          {
-            dataSources
-              ? dataSources.map(
-              (optionValue) => <Select.Option value={optionValue} label={optionValue} key={optionValue}/>)
-              : null
-          }
-        </Select>
-      </Form.Item>
+const Filter = ({onSubmit, dataSources = [], campaigns = []}) => {
 
-      <Form.Item
-        label="Campaigns"
-        name="campaigns"
-      >
-        <Select {...selectProps} >
-          {
-            campaigns
-              ? campaigns.map(
-              (optionValue) => <Select.Option value={optionValue} label={optionValue} key={optionValue}/>)
-              : null
-          }
-        </Select>
-      </Form.Item>
+  const generateOptions = useCallback((values) => values && values.map(
+    (optionValue) => <Select.Option value={optionValue} label={optionValue} key={optionValue}/>), []);
 
-      <Form.Item>
-        <Button type="primary" htmlType="submit">
-          Apply
-        </Button>
-      </Form.Item>
-    </Form>
-  </>
-)
+  return (
+    <>
+      <Header title="Filter dimension values"/>
+      <Form
+        name="basic"
+        onFinish={onSubmit}
+        initialValues={{dataSources: [], campaigns: []}}
+      >
+        <Form.Item
+          label="DataSource"
+          name="dataSources"
+        >
+          <Select {...selectProps} >
+            {generateOptions(dataSources)}
+          </Select>
+        </Form.Item>
+
+        <Form.Item
+          label="Campaigns"
+          name="campaigns"
+        >
+          <Select {...selectProps} >
+            {generateOptions(campaigns)}
+          </Select>
+        </Form.Item>
+
+        <Form.Item>
+          <Button type="primary" htmlType="submit">
+            Apply
+          </Button>
+        </Form.Item>
+      </Form>
+    </>
+  )
+}
 
 export default Filter
